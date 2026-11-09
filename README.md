@@ -1,6 +1,22 @@
-# capstone3-sales-forecast (port 8104)
+# Restaurant sales forecast
 
-## Demo
+Three years of restaurant item sales, explored and forecast per store and item with XGBoost, random forest, linear regression and an LSTM, served on a dashboard. Caltech CTME PGC AIML, Capstone 3.
+
+**Watch it first:** [the 90-second film](demo/film.mp4) (what it does, how it is built, the proof, the answer) or the [60-second cut](demo/film-60s.mp4). The plain walkthrough with captions is [demo/demo.mp4](demo/demo.mp4).
+
+## Try it in three commands
+
+```bash
+git clone https://github.com/Keshigami/capstone3-sales-forecast.git && cd capstone3-sales-forecast
+just setup        # creates the venv with uv (Python 3.11)
+just up           # http://127.0.0.1:8104/  (just down to stop)
+```
+
+You need [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just) (`brew install uv just` on a Mac). The dataset (`data/`) and the trained models (`models/`) are in the repo, so the dashboard runs as is; `just train` (about a minute) or `just train-full` (a few minutes) retrains them. No API key is needed anywhere in this project. `just test` runs the lint and the seven offline tests.
+
+Step by step, with the API examples: [docs/Getting-Started.md](docs/Getting-Started.md), then [how it was built](docs/How-It-Was-Built.md), [results](docs/Results.md), [limits](docs/Limits-and-Next-Steps.md) and [the film](docs/The-Film.md). The same pages are on the [wiki](https://github.com/Keshigami/capstone3-sales-forecast/wiki).
+
+## Demo walkthrough
 <!-- demo:auto -->
 ![demo](demo/demo.gif)
 
