@@ -1,0 +1,72 @@
+{
+ "folder": "capstone3-sales-forecast",
+ "slug": "capstone3-sales-forecast",
+ "port": 8104,
+ "title": "Restaurant sales forecast",
+ "one_liner": "Three years of restaurant item sales explored and forecast per store and item with XGBoost, random forest, linear regression and an LSTM, served on a dashboard.",
+ "duration_s": 72.6,
+ "highlight_s": 3.3,
+ "steps": [
+  {
+   "n": 1,
+   "text": "Capstone 3: a 30-day forecast for Bob's Diner runs on load",
+   "ok": true,
+   "t": 2.5
+  },
+  {
+   "n": 2,
+   "text": "Change the store: Beachfront Bar",
+   "ok": true,
+   "t": 8.3
+  },
+  {
+   "n": 3,
+   "text": "Horizon 60 days, Forecast",
+   "ok": true,
+   "t": 11.5
+  },
+  {
+   "n": 4,
+   "text": "Switch to the LSTM: daily revenue over all stores",
+   "ok": true,
+   "t": 22.6
+  },
+  {
+   "n": 5,
+   "text": "Model scores on the held-out six months: linear regression, random forest, XGBoost, LSTM",
+   "ok": true,
+   "t": 34.1
+  },
+  {
+   "n": 6,
+   "text": "EDA: the overall sales pattern",
+   "ok": true,
+   "t": 40.9
+  },
+  {
+   "n": 7,
+   "text": "Friday and Saturday sell most; Sunday is the quietest day",
+   "ok": true,
+   "t": 46.3
+  },
+  {
+   "n": 8,
+   "text": "Each restaurant over time: Bob's Diner is 99 percent of all volume",
+   "ok": true,
+   "t": 51.6
+  },
+  {
+   "n": 9,
+   "text": "Most popular items, and the most expensive item per store",
+   "ok": true,
+   "t": 57.0
+  },
+  {
+   "n": 10,
+   "text": "Most popular item at each store",
+   "ok": true,
+   "t": 62.4
+  }
+ ],
+ "skipped": []
+}

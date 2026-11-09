@@ -1,0 +1,347 @@
+{
+ "rows": 109600,
+ "n_items": 100,
+ "n_stores": 6,
+ "date_min": "2019-01-01",
+ "date_max": "2021-12-31",
+ "n_days": 1096,
+ "total_units": 694787.0,
+ "total_revenue": 6403738.45,
+ "daily_units": {
+  "mean": 633.9,
+  "min": 175.0,
+  "max": 1201.0,
+  "peak_date": "2021-07-09"
+ },
+ "weekday_units": {
+  "Monday": 70112.0,
+  "Tuesday": 79454.0,
+  "Wednesday": 88298.0,
+  "Thursday": 116947.0,
+  "Friday": 136300.0,
+  "Saturday": 135644.0,
+  "Sunday": 68032.0
+ },
+ "month_units": {
+  "January": 41270.0,
+  "February": 43596.0,
+  "March": 55137.0,
+  "April": 63145.0,
+  "May": 73632.0,
+  "June": 74423.0,
+  "July": 77125.0,
+  "August": 69502.0,
+  "September": 58660.0,
+  "October": 53403.0,
+  "November": 43670.0,
+  "December": 41224.0
+ },
+ "quarter_units": {
+  "Q1": 140003.0,
+  "Q2": 211200.0,
+  "Q3": 205287.0,
+  "Q4": 138297.0
+ },
+ "quarter_year_units": {
+  "Q1-2019": 43231.0,
+  "Q2-2019": 65259.0,
+  "Q3-2019": 63152.0,
+  "Q4-2019": 42595.0,
+  "Q1-2020": 47278.0,
+  "Q2-2020": 70654.0,
+  "Q3-2020": 68241.0,
+  "Q4-2020": 46408.0,
+  "Q1-2021": 49494.0,
+  "Q2-2021": 75287.0,
+  "Q3-2021": 73894.0,
+  "Q4-2021": 49294.0
+ },
+ "store_units": {
+  "Bob's Diner": 687527.0,
+  "Surfs Up": 1803.0,
+  "Sweet Shack": 1736.0,
+  "Corner Cafe": 1310.0,
+  "Beachfront Bar": 1305.0,
+  "Fou Cher": 1106.0
+ },
+ "store_revenue": {
+  "Bob's Diner": 6337275.69,
+  "Fou Cher": 27885.37,
+  "Corner Cafe": 16551.43,
+  "Surfs Up": 15651.49,
+  "Beachfront Bar": 3796.2,
+  "Sweet Shack": 2578.27
+ },
+ "store_year_units": {
+  "Beachfront Bar": {
+   "2019": 439.0,
+   "2020": 437.0,
+   "2021": 429.0
+  },
+  "Bob's Diner": {
+   "2019": 211799.0,
+   "2020": 230191.0,
+   "2021": 245537.0
+  },
+  "Corner Cafe": {
+   "2019": 423.0,
+   "2020": 415.0,
+   "2021": 472.0
+  },
+  "Fou Cher": {
+   "2019": 392.0,
+   "2020": 357.0,
+   "2021": 357.0
+  },
+  "Surfs Up": {
+   "2019": 594.0,
+   "2020": 627.0,
+   "2021": 582.0
+  },
+  "Sweet Shack": {
+   "2019": 590.0,
+   "2020": 554.0,
+   "2021": 592.0
+  }
+ },
+ "store_year_revenue": {
+  "Beachfront Bar": {
+   "2019": 1281.85,
+   "2020": 1267.21,
+   "2021": 1247.14
+  },
+  "Bob's Diner": {
+   "2019": 1849483.49,
+   "2020": 2112331.91,
+   "2021": 2375460.29
+  },
+  "Corner Cafe": {
+   "2019": 5292.93,
+   "2020": 5347.71,
+   "2021": 5910.79
+  },
+  "Fou Cher": {
+   "2019": 9698.8,
+   "2020": 8590.87,
+   "2021": 9595.7
+  },
+  "Surfs Up": {
+   "2019": 5132.65,
+   "2020": 5314.43,
+   "2021": 5204.41
+  },
+  "Sweet Shack": {
+   "2019": 872.59,
+   "2020": 828.65,
+   "2021": 877.03
+  }
+ },
+ "store_per_day": {
+  "Bob's Diner": {
+   "units_per_day": 627.31,
+   "revenue_per_day": 5782.19
+  },
+  "Fou Cher": {
+   "units_per_day": 1.01,
+   "revenue_per_day": 25.44
+  },
+  "Corner Cafe": {
+   "units_per_day": 1.2,
+   "revenue_per_day": 15.1
+  },
+  "Surfs Up": {
+   "units_per_day": 1.65,
+   "revenue_per_day": 14.28
+  },
+  "Beachfront Bar": {
+   "units_per_day": 1.19,
+   "revenue_per_day": 3.46
+  },
+  "Sweet Shack": {
+   "units_per_day": 1.58,
+   "revenue_per_day": 2.35
+  }
+ },
+ "top_items": [
+  {
+   "item_id": 19,
+   "item_name": "Strawberry Smoothy",
+   "restaurant_name": "Bob's Diner",
+   "kcal": 145,
+   "price": 2.89,
+   "item_count": 236337.0
+  },
+  {
+   "item_id": 16,
+   "item_name": "Frozen Milky Smoothy",
+   "restaurant_name": "Bob's Diner",
+   "kcal": 284,
+   "price": 3.21,
+   "item_count": 102990.0
+  },
+  {
+   "item_id": 76,
+   "item_name": "Amazing pork lunch",
+   "restaurant_name": "Bob's Diner",
+   "kcal": 679,
+   "price": 17.93,
+   "item_count": 61043.0
+  },
+  {
+   "item_id": 38,
+   "item_name": "Mutton Dinner",
+   "restaurant_name": "Bob's Diner",
+   "kcal": 542,
+   "price": 10.8,
+   "item_count": 52772.0
+  },
+  {
+   "item_id": 9,
+   "item_name": "Orange Juice",
+   "restaurant_name": "Bob's Diner",
+   "kcal": 135,
+   "price": 3.91,
+   "item_count": 43874.0
+  }
+ ],
+ "popular_item_per_store": [
+  {
+   "restaurant_name": "Bob's Diner",
+   "item_name": "Strawberry Smoothy",
+   "kcal": 145,
+   "price": 2.89,
+   "item_count": 236337.0
+  },
+  {
+   "restaurant_name": "Sweet Shack",
+   "item_name": "Awesome Smoothy",
+   "kcal": 78,
+   "price": 1.39,
+   "item_count": 1692.0
+  },
+  {
+   "restaurant_name": "Beachfront Bar",
+   "item_name": "Fantastic Milky Smoothy",
+   "kcal": 318,
+   "price": 2.91,
+   "item_count": 1147.0
+  },
+  {
+   "restaurant_name": "Surfs Up",
+   "item_name": "Awesome Soft Drink",
+   "kcal": 248,
+   "price": 3.06,
+   "item_count": 997.0
+  },
+  {
+   "restaurant_name": "Fou Cher",
+   "item_name": "Blue Ribbon Fruity Vegi Lunch",
+   "kcal": 881,
+   "price": 53.98,
+   "item_count": 298.0
+  },
+  {
+   "restaurant_name": "Corner Cafe",
+   "item_name": "Frozen Milky Smoothy",
+   "kcal": 211,
+   "price": 3.98,
+   "item_count": 273.0
+  }
+ ],
+ "most_expensive_per_store": [
+  {
+   "restaurant_name": "Fou Cher",
+   "item_name": "Blue Ribbon Fruity Vegi Lunch",
+   "cost": 53.98,
+   "kcal": 881
+  },
+  {
+   "restaurant_name": "Bob's Diner",
+   "item_name": "Sweet Fruity Cake",
+   "cost": 29.22,
+   "kcal": 931
+  },
+  {
+   "restaurant_name": "Corner Cafe",
+   "item_name": "Pike Lunch",
+   "cost": 26.37,
+   "kcal": 653
+  },
+  {
+   "restaurant_name": "Surfs Up",
+   "item_name": "Steak Meal",
+   "cost": 26.21,
+   "kcal": 607
+  },
+  {
+   "restaurant_name": "Sweet Shack",
+   "item_name": "Blue Ribbon Frozen Milky Cake",
+   "cost": 7.7,
+   "kcal": 636
+  },
+  {
+   "restaurant_name": "Beachfront Bar",
+   "item_name": "Sweet Vegi Soft Drink",
+   "cost": 5.7,
+   "kcal": 538
+  }
+ ],
+ "item_cost_per_store": {
+  "Beachfront Bar": {
+   "max": 5.7,
+   "min": 2.43,
+   "mean": 3.59,
+   "count": 6.0
+  },
+  "Bob's Diner": {
+   "max": 29.22,
+   "min": 2.89,
+   "mean": 12.21,
+   "count": 24.0
+  },
+  "Corner Cafe": {
+   "max": 26.37,
+   "min": 3.74,
+   "mean": 13.37,
+   "count": 24.0
+  },
+  "Fou Cher": {
+   "max": 53.98,
+   "min": 3.23,
+   "mean": 12.82,
+   "count": 28.0
+  },
+  "Surfs Up": {
+   "max": 26.21,
+   "min": 3.06,
+   "mean": 13.97,
+   "count": 10.0
+  },
+  "Sweet Shack": {
+   "max": 7.7,
+   "min": 1.39,
+   "mean": 5.28,
+   "count": 8.0
+  }
+ },
+ "findings": {
+  "daily_total": "1096 days from 2019-01-01 to 2021-12-31: 694,787 units sold, 634 a day on average (min 175, max 1,201 on 2021-07-09). The series climbs year on year with a strong weekly rhythm and a dip around the end of each year.",
+  "weekday": "Friday and Saturday sell most (136,300 and 135,644 units); Sunday is the quietest day (68,032), about half of the peak. Volume builds through the week and collapses on Sunday.",
+  "month": "July is the busiest month (77,125 units) and December the slowest (41,224); summer months lead.",
+  "quarter": "Summed over the three years, Q2 sells most (211,200) and Q4 least (138,297). Every quarter of 2021 beats the same quarter of 2019.",
+  "stores": "Bob's Diner is in another league: 687,527 units, 99.0 percent of all volume. Among the other five, Surfs Up sells the most units and Fou Cher the fewest.",
+  "revenue_vs_volume": "Volume and money disagree once Bob's Diner is set aside: Fou Cher earns the most per day ($25) on only 1.0 units, while Sweet Shack earns the least ($2 a day). Unit ranking: Bob's Diner > Surfs Up > Sweet Shack > Corner Cafe > Beachfront Bar > Fou Cher. Revenue ranking: Bob's Diner > Fou Cher > Corner Cafe > Surfs Up > Beachfront Bar > Sweet Shack.",
+  "popular_items": "The best seller is Strawberry Smoothy at Bob's Diner with 236,337 units (145 kcal, $2.89); 3 of the top five cost under $5 and all five are sold at Bob's Diner.",
+  "expensive_items": "The priciest item on any menu is Blue Ribbon Fruity Vegi Lunch at Fou Cher ($53.98, 881 kcal). Price and calories go together: every store's priciest item is at least 538 kcal, and the two costliest are also the two most caloric."
+ },
+ "charts": {
+  "daily_total": "eda/daily_total.png",
+  "weekday": "eda/weekday.png",
+  "month": "eda/month.png",
+  "quarter": "eda/quarter.png",
+  "revenue_vs_volume": "eda/revenue_vs_volume.png",
+  "stores": "eda/store_daily.png",
+  "popular_items": "eda/popular_items.png",
+  "expensive_items": "eda/expensive_items.png"
+ }
+}

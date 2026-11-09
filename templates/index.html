@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restaurant sales forecast</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/static/ui.css">
+<style>
+  .controls{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end}
+  .controls .act{display:flex;gap:10px;align-items:center}
+  .chart{width:100%;height:auto;display:block;background:var(--bg-2);border:1px solid var(--line);border-radius:8px}
+  .chart text{font-family:var(--mono);font-size:11px;fill:var(--fg-3)}
+  .chart .grid{stroke:var(--line);stroke-width:1}
+  .chart .hist{fill:none;stroke:var(--fg-3);stroke-width:1.5}
+  .chart .fc{fill:none;stroke:var(--accent);stroke-width:2}
+  .chart .area{fill:var(--accent-dim)}
+  .chart .cross{stroke:var(--fg-2);stroke-width:1;stroke-dasharray:3 3}
+  .legend{display:flex;gap:16px;font-size:.8rem;color:var(--fg-2);margin:6px 0 0} .legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--accent);vertical-align:middle;margin-right:6px} .legend i.h{border-color:var(--fg-3)}
+  .tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:.78rem var(--mono);color:var(--fg);display:none;z-index:2}
+  .stats{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .stat.best b{color:var(--accent)} .stat .tag{font-family:var(--mono);font-size:.7rem;color:var(--accent)}
+  .tbl{max-height:280px;overflow:auto}
+  td.num,th.num{text-align:right;font-family:var(--mono)}
+  details summary{cursor:pointer;color:var(--fg-2);font-size:.9rem}
+  .figs{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr))}
+  .figs figure.wide{grid-column:1/-1}
+  figcaption b{color:var(--fg);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>Restaurant sales forecast</h1>
+  <span class="sub">Three years of daily item sales across six restaurants: the notebook's EDA findings, then a forecast per store and item from the best of LR, RF, XGBoost and an LSTM.</span>
+  <span class="badge {% if model_loaded %}on{% endif %}">{% if model_loaded %}model: {{ best_label }} ({{ metrics.mode }}){% else %}no model: run just train{% endif %}</span>
+  <span class="badge">port {{ port }}</span>
+</header>
+
+<section class="card" id="forecast">
+  <h2>Forecast</h2>
+  {% if model_loaded %}
+  <form class="controls" onsubmit="return runForecast(event)">
+    <div><label for="input">Store</label>
+      <select id="input" name="store">
+        <option value="all">All stores</option>
+        {% for id, name in stores.items() %}<option value="{{ id }}" {% if id == 1 %}selected{% endif %}>{{ name }}</option>{% endfor %}
+      </select></div>
+    <div><label for="item">Item</label>
+      <select id="item" name="item"><option value="all">All items</option>
+        {% for it in items %}<option value="{{ it.item_id }}" data-store="{{ it.store_id }}">{{ it.name }} ({{ stores[it.store_id] }})</option>{% endfor %}
+      </select></div>
+    <div><label for="days">Horizon, days</label><input id="days" name="days" type="number" min="1" max="365" value="30"></div>
+    <div><label for="model">Model</label>
+      <select id="model" name="model"><option value="best">Best tabular ({{ best_label }}), units</option><option value="lstm">LSTM, daily revenue (all stores)</option></select></div>
+    <div class="act"><button id="run" type="submit">Forecast</button><span id="spin" class="spinner" style="display:none"></span></div>
+  </form>
+  <div id="result" style="position:relative;margin-top:16px">
+    <div class="empty">Pick a store and a horizon, then press Forecast.</div>
+  </div>
+  {% else %}
+  <div class="empty">No trained model yet. Run <code>just train</code> (about a minute) and reload.</div>
+  {% endif %}
+</section>
+
+{% if metrics %}
+<section class="card" style="margin-top:var(--gap)">
+  <h2>Model scores on the last six months (held out, {{ metrics.holdout.days }} days from {{ metrics.holdout.start }})</h2>
+  <p class="muted">Tabular models predict units per store and item per day; scores are on the daily total over all 100 items. The LSTM forecasts daily revenue for all stores, fed its own output for 184 days. Lower is better; MAPE is a fraction of actual.</p>
+  <div class="stats">
+    {% for t in tiles %}
+    <div class="stat {% if t.best %}best{% endif %}">
+      <b>{{ "%.1f"|format(t.rmse) }}</b>
+      <span>{{ t.label }} RMSE{% if t.key == 'lstm' %} ($){% endif %} · MAE {{ "%.1f"|format(t.mae) }}{% if t.mape is not none %} · MAPE {{ "%.1f"|format(t.mape * 100) }}%{% endif %}</span>
+      {% if t.best %}<span class="tag">best tabular, used for the forecast</span>{% endif %}
+    </div>
+    {% endfor %}
+    <div class="stat"><b>{{ metrics.mode }}</b><span>training mode · {{ metrics.train_seconds }}s on this machine</span></div>
+  </div>
+  <details style="margin-top:12px"><summary>Same framing as the notebook (one daily-total series, date features only)</summary>
+    <div class="scroll"><table style="margin-top:8px"><tr><th>Model</th><th class="num">RMSE here</th><th class="num">RMSE in notebook</th><th class="num">MAE here</th><th class="num">R² here</th></tr>
+    {% for k, s in metrics.notebook_replica.scores.items() %}<tr><td>{{ k }}</td><td class="num">{{ "%.2f"|format(s.rmse) }}</td><td class="num">{{ "%.2f"|format(metrics.notebook_replica.notebook_reported[k].rmse) }}</td><td class="num">{{ "%.2f"|format(s.mae) }}</td><td class="num">{{ "%.3f"|format(s.r2) }}</td></tr>{% endfor %}
+    </table></div></details>
+</section>
+{% endif %}
+
+<section style="margin-top:var(--gap)">
+  <h2>What the data says</h2>
+  {% if findings %}
+  <p class="muted">{{ findings.rows | int }} rows, {{ findings.n_items }} items, {{ findings.n_stores }} restaurants, {{ findings.date_min }} to {{ findings.date_max }}. {{ "{:,.0f}".format(findings.total_units) }} units, ${{ "{:,.0f}".format(findings.total_revenue) }} revenue.</p>
+  <div class="figs">
+    {% for c in charts %}
+    <figure class="card {% if c.key in ('daily_total','stores','quarter') %}wide{% endif %}">
+      <img src="{{ c.src }}" alt="{{ c.title }}" loading="lazy">
+      <figcaption><b>{{ c.title }}.</b> {{ c.caption }}</figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+  <div class="grid" style="margin-top:var(--gap)">
+    <div class="card"><h3>Most popular item at each store</h3><div class="scroll"><table><tr><th>Store</th><th>Item</th><th class="num">Units</th><th class="num">kcal</th><th class="num">$</th></tr>
+      {% for r in findings.popular_item_per_store %}<tr><td>{{ r.restaurant_name }}</td><td>{{ r.item_name }}</td><td class="num">{{ "{:,.0f}".format(r.item_count) }}</td><td class="num">{{ r.kcal }}</td><td class="num">{{ "%.2f"|format(r.price) }}</td></tr>{% endfor %}</table></div></div>
+    <div class="card"><h3>Units and revenue per day, by store</h3><div class="scroll"><table><tr><th>Store</th><th class="num">Units/day</th><th class="num">$/day</th></tr>
+      {% for name, r in findings.store_per_day.items() %}<tr><td>{{ name }}</td><td class="num">{{ "%.1f"|format(r.units_per_day) }}</td><td class="num">{{ "{:,.0f}".format(r.revenue_per_day) }}</td></tr>{% endfor %}</table></div></div>
+  </div>
+  {% else %}<div class="empty">No EDA output yet. Run <code>just train</code>.</div>{% endif %}
+</section>
+<p class="meta" style="margin-top:24px">API: <code>POST /forecast {"store":"Bob's Diner","days":14}</code> · <code>GET /metrics</code> · <code>GET /health</code></p>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = (v, unit) => unit.startsWith('revenue') ? '$' + v.toLocaleString(undefined, {maximumFractionDigits: 0}) : v.toLocaleString(undefined, {maximumFractionDigits: 1});
+function filterItems() {
+  const store = $('#input').value;
+  for (const o of $('#item').options) { if (!o.dataset.store) continue; o.hidden = store !== 'all' && o.dataset.store !== store; }
+  if ($('#item').selectedOptions[0]?.hidden) $('#item').value = 'all';
+}
+function chart(r) {
+  const W = 860, H = 260, L = 56, R = 12, T = 16, B = 34;
+  const hist = r.history.dates.map((d, i) => ({d, v: r.history.values[i], h: true}));
+  const fc = r.dates.map((d, i) => ({d, v: r.values[i], h: false}));
+  const pts = hist.concat(fc), n = pts.length;
+  const max = Math.max(1, ...pts.map(p => p.v)) * 1.08;
+  const x = (i) => L + (W - L - R) * (n === 1 ? 0.5 : i / (n - 1));
+  const y = (v) => T + (H - T - B) * (1 - v / max);
+  const path = (arr, off) => arr.map((p, i) => (i ? 'L' : 'M') + x(i + off).toFixed(1) + ' ' + y(p.v).toFixed(1)).join(' ');
+  let g = '';
+  for (let k = 0; k <= 4; k++) { const v = max * k / 4, yy = y(v); g += `<line class="grid" x1="${L}" x2="${W - R}" y1="${yy}" y2="${yy}"/><text x="${L - 6}" y="${yy + 4}" text-anchor="end">${fmt(Math.round(v), r.unit)}</text>`; }
+  const ticks = [0, Math.floor(n / 4), Math.floor(n / 2), Math.floor(3 * n / 4), n - 1];
+  for (const i of ticks) g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${pts[i].d}</text>`;
+  const h0 = hist.length;
+  const area = fc.length ? `<path class="area" d="${path(fc, h0)} L${x(n - 1)} ${y(0)} L${x(h0)} ${y(0)} Z"/>` : '';
+  const bridge = h0 && fc.length ? `<path class="fc" d="M${x(h0 - 1)} ${y(hist[h0 - 1].v)} L${x(h0)} ${y(fc[0].v)}"/>` : '';
+  const svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" id="svg" role="img" aria-label="history and forecast">${g}${area}<path class="hist" d="${path(hist, 0)}"/>${bridge}<path class="fc" d="${path(fc, h0)}"/><line id="cross" class="cross" y1="${T}" y2="${H - B}" style="display:none"/><circle id="dot" r="4" fill="var(--accent)" style="display:none"/></svg>`;
+  return {svg, pts, x, y, W};
+}
+function render(r) {
+  const c = chart(r);
+  const rows = r.dates.map((d, i) => `<tr><td>${d}</td><td class="num">${fmt(r.values[i], r.unit)}</td></tr>`).join('');
+  $('#result').innerHTML = `
+    <div class="stats" style="margin-bottom:12px">
+      <div class="stat"><b>${fmt(r.total, r.unit)}</b><span>total ${r.unit} over ${r.days} days</span></div>
+      <div class="stat"><b>${fmt(r.mean_per_day, r.unit)}</b><span>per day on average</span></div>
+      <div class="stat"><b>${r.store}</b><span>${r.item}</span></div>
+      <div class="stat"><b>${r.model.replace('_', ' ')}</b><span>model · horizon starts ${r.dates[0]}</span></div>
+    </div>
+    ${c.svg}<div class="legend"><span><i class="h"></i>last ${r.history.dates.length} days, actual</span><span><i></i>forecast</span></div>
+    <div class="tip" id="tip"></div>
+    <details style="margin-top:12px"><summary>Table, ${r.days} rows</summary><div class="tbl"><table><tr><th>Date</th><th class="num">${r.unit}</th></tr>${rows}</table></div></details>`;
+  const svg = $('#svg'), tip = $('#tip'), cross = $('#cross'), dot = $('#dot');
+  svg.addEventListener('mousemove', (e) => {
+    const box = svg.getBoundingClientRect(); const px = (e.clientX - box.left) / box.width * c.W;
+    let best = 0, bd = 1e9; c.pts.forEach((p, i) => { const d = Math.abs(c.x(i) - px); if (d < bd) { bd = d; best = i; } });
+    const p = c.pts[best]; cross.setAttribute('x1', c.x(best)); cross.setAttribute('x2', c.x(best)); cross.style.display = '';
+    dot.setAttribute('cx', c.x(best)); dot.setAttribute('cy', c.y(p.v)); dot.style.display = '';
+    tip.textContent = `${p.d}  ${fmt(p.v, r.unit)}  ${p.h ? 'actual' : 'forecast'}`; tip.style.display = 'block';
+    tip.style.left = Math.min(e.clientX - box.left + 12, box.width - 180) + 'px'; tip.style.top = (e.clientY - box.top - 36 + $('#svg').offsetTop) + 'px';
+  });
+  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; cross.style.display = 'none'; dot.style.display = 'none'; });
+}
+async function runForecast(e) {
+  if (e) e.preventDefault();
+  const body = {store: $('#input').value, item: $('#item').value, days: +$('#days').value, model: $('#model').value};
+  $('#run').disabled = true; $('#spin').style.display = '';
+  try {
+    const res = await fetch('/forecast', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.error || res.statusText);
+    render(data);
+  } catch (err) {
+    $('#result').innerHTML = `<div class="empty" style="color:var(--danger)">Forecast failed: ${err.message}. Check the store and item, or run just train.</div>`;
+  } finally { $('#run').disabled = false; $('#spin').style.display = 'none'; }
+  return false;
+}
+if ($('#input')) {
+  $('#input').addEventListener('change', filterItems);
+  $('#model').addEventListener('change', () => { const l = $('#model').value === 'lstm'; $('#input').disabled = l; $('#item').disabled = l; });
+  filterItems(); runForecast();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+{
+ "mode": "full",
+ "trained_at": "2026-11-07T20:03:24+00:00",
+ "holdout": {
+  "start": "2021-07-01",
+  "end": "2021-12-31",
+  "days": 184,
+  "rows": 18400
+ },
+ "target": "item_count per (date, store, item); daily_total = predictions summed per day over all 100 items",
+ "features": [
+  "weekday",
+  "quarter",
+  "year",
+  "month",
+  "day_year",
+  "day_month",
+  "week_num",
+  "store_id",
+  "item_id",
+  "price",
+  "kcal"
+ ],
+ "models": {
+  "linear_regression": {
+   "fit_seconds": 0.1,
+   "row_level": {
+    "mae": 5.0881,
+    "rmse": 18.3891,
+    "r2": 0.6447
+   },
+   "daily_total": {
+    "mae": 98.2759,
+    "rmse": 136.3838,
+    "mape": 0.251,
+    "r2": 0.712
+   },
+   "store_daily": {
+    "1": {
+     "mae": 175.7903,
+     "rmse": 211.0107,
+     "mape": 0.3406,
+     "r2": 0.3101
+    },
+    "2": {
+     "mae": 7.2016,
+     "rmse": 11.0561,
+     "r2": -120.1804
+    },
+    "3": {
+     "mae": 9.6004,
+     "rmse": 14.6708,
+     "r2": -167.4437
+    },
+    "4": {
+     "mae": 31.9656,
+     "rmse": 51.2061,
+     "r2": -4489.9493
+    },
+    "5": {
+     "mae": 27.6829,
+     "rmse": 43.7873,
+     "r2": -1549.0142
+    },
+    "6": {
+     "mae": 11.8691,
+     "rmse": 18.3193,
+     "r2": -269.9354
+    }
+   }
+  },
+  "random_forest": {
+   "fit_seconds": 6.0,
+   "row_level": {
+    "mae": 1.4815,
+    "rmse": 6.8585,
+    "r2": 0.9506
+   },
+   "daily_total": {
+    "mae": 68.4362,
+    "rmse": 84.8993,
+    "mape": 0.1515,
+    "r2": 0.8884
+   },
+   "store_daily": {
+    "1": {
+     "mae": 67.6086,
+     "rmse": 83.9185,
+     "mape": 0.1523,
+     "r2": 0.8909
+    },
+    "2": {
+     "mae": 0.8733,
+     "rmse": 1.0982,
+     "r2": -0.1957
+    },
+    "3": {
+     "mae": 0.9676,
+     "rmse": 1.1999,
+     "r2": -0.1268
+    },
+    "4": {
+     "mae": 0.8636,
+     "rmse": 1.0696,
+     "r2": -0.9594
+    },
+    "5": {
+     "mae": 0.9026,
+     "rmse": 1.1166,
+     "r2": -0.0079
+    },
+    "6": {
+     "mae": 1.0242,
+     "rmse": 1.2735,
+     "r2": -0.3094
+    }
+   }
+  },
+  "xgboost": {
+   "fit_seconds": 10.3,
+   "row_level": {
+    "mae": 1.4737,
+    "rmse": 6.1128,
+    "r2": 0.9607
+   },
+   "daily_total": {
+    "mae": 47.571,
+    "rmse": 59.9483,
+    "mape": 0.0964,
+    "r2": 0.9444
+   },
+   "store_daily": {
+    "1": {
+     "mae": 48.2469,
+     "rmse": 60.2943,
+     "mape": 0.0978,
+     "r2": 0.9437
+    },
+    "2": {
+     "mae": 0.8154,
+     "rmse": 1.0647,
+     "r2": -0.1238
+    },
+    "3": {
+     "mae": 1.0548,
+     "rmse": 1.2833,
+     "r2": -0.2888
+    },
+    "4": {
+     "mae": 1.7288,
+     "rmse": 1.9806,
+     "r2": -5.7188
+    },
+    "5": {
+     "mae": 1.4482,
+     "rmse": 1.6812,
+     "r2": -1.2849
+    },
+    "6": {
+     "mae": 0.9395,
+     "rmse": 1.1506,
+     "r2": -0.0689
+    }
+   }
+  },
+  "lstm": {
+   "epochs_run": 8,
+   "final_val_loss": 0.00695,
+   "recursive_184_days": {
+    "mae": 1825.4884,
+    "rmse": 2166.3152,
+    "mape": 0.2914,
+    "r2": 0.2082
+   },
+   "one_step_ahead": {
+    "mae": 645.8205,
+    "rmse": 824.8533,
+    "mape": 0.1271,
+    "r2": 0.8785
+   },
+   "fit_seconds": 196.4,
+   "length": 90
+  }
+ },
+ "best_tabular": "xgboost",
+ "winner_metric": "daily_total.rmse on the 184-day holdout",
+ "notebook_replica": {
+  "note": "daily-total series, date features only, as in the notebook",
+  "scores": {
+   "linear_regression": {
+    "mae": 196.0372,
+    "rmse": 244.2108,
+    "mape": 0.4406,
+    "r2": 0.0765
+   },
+   "random_forest": {
+    "mae": 47.8871,
+    "rmse": 60.342,
+    "mape": 0.0802,
+    "r2": 0.9436
+   },
+   "xgboost": {
+    "mae": 60.4884,
+    "rmse": 73.4366,
+    "mape": 0.1238,
+    "r2": 0.9165
+   }
+  },
+  "notebook_reported": {
+   "linear_regression": {
+    "rmse": 244.21,
+    "mae": 196.04,
+    "r2": 0.0765
+   },
+   "random_forest": {
+    "rmse": 59.91,
+    "mae": 47.48,
+    "r2": 0.9444
+   },
+   "xgboost": {
+    "rmse": 72.3,
+    "mae": 59.45,
+    "r2": 0.919
+   },
+   "lstm": {
+    "mape": 1.3407
+   }
+  }
+ },
+ "baseline": {
+  "last_date": "2021-12-31",
+  "last_28_days_mean_units_per_day": {
+   "all": 474.32,
+   "1": 467.5,
+   "2": 1.18,
+   "3": 1.89,
+   "4": 0.86,
+   "5": 1.57,
+   "6": 1.32
+  },
+  "last_28_days_mean_revenue_per_day": 4698.89
+ },
+ "train_seconds": 219.8
+}
