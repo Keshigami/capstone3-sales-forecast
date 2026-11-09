@@ -17,3 +17,6 @@ models/st/
 dist/
 data/capstone1/
 data/capstone2/
+# shipped trained models
+!models/lstm.keras
+!models/best_model.joblib
